@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "title": "Classic Cappuccino",
+    "category": "coffee",
+    "price": 149,
+    "rating": 4.7,
+    "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 2,
+    "title": "Iced Caramel Latte",
+    "category": "drinks",
+    "price": 179,
+    "rating": 4.5,
+    "image": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 3,
+    "title": "Mocha Hazelnut",
+    "category": "coffee",
+    "price": 189,
+    "rating": 4.8,
+    "image": "https://images.unsplash.com/photo-1494314671902-399b18174975?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 4,
+    "title": "Cold Brew Tonic",
+    "category": "drinks",
+    "price": 159,
+    "rating": 4.4,
+    "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 5,
+    "title": "Paneer Club Sandwich",
+    "category": "sandwiches",
+    "price": 219,
+    "rating": 4.6,
+    "image": "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 6,
+    "title": "Pesto Veg Sandwich",
+    "category": "sandwiches",
+    "price": 209,
+    "rating": 4.3,
+    "image": "https://images.unsplash.com/photo-1481070555726-e2fe8357725c?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 7,
+    "title": "Butter Croissant",
+    "category": "pastries",
+    "price": 129,
+    "rating": 4.5,
+    "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 8,
+    "title": "Chocolate Danish",
+    "category": "pastries",
+    "price": 139,
+    "rating": 4.2,
+    "image": "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 9,
+    "title": "Greek Salad Bowl",
+    "category": "salads",
+    "price": 199,
+    "rating": 4.1,
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 10,
+    "title": "Caesar Crunch Salad",
+    "category": "salads",
+    "price": 229,
+    "rating": 4.4,
+    "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 11,
+    "title": "Vanilla Frappe",
+    "category": "drinks",
+    "price": 189,
+    "rating": 4.6,
+    "image": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 12,
+    "title": "Signature Espresso",
+    "category": "coffee",
+    "price": 119,
+    "rating": 4.9,
+    "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=900&q=80"
+  }
+]
