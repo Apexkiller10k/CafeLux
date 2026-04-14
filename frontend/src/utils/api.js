@@ -1,11 +1,38 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const envApiUrl = (process.env.REACT_APP_API_URL || "").trim();
+
+function getDefaultApiBaseUrl() {
+  if (typeof window === "undefined") {
+    return "http://localhost:5000";
+  }
+
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+
+  if (isLocalhost) {
+    return "http://localhost:5000";
+  }
+
+  // In deployed environments, default to same-origin so /api can be proxied.
+  return "";
+}
+
+const API_BASE_URL = envApiUrl || getDefaultApiBaseUrl();
+
+function buildUrl(path) {
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  if (!API_BASE_URL) {
+    return cleanPath;
+  }
+
+  return `${API_BASE_URL.replace(/\/$/, "")}${cleanPath}`;
+}
 
 export async function getJson(path) {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+  const response = await fetch(buildUrl(path));
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message = data?.message || 'Request failed.';
+    const message = data?.message || "Request failed.";
     throw new Error(message);
   }
 
@@ -13,18 +40,18 @@ export async function getJson(path) {
 }
 
 export async function postJson(path, payload) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: 'POST',
+  const response = await fetch(buildUrl(path), {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message = data?.message || 'Request failed.';
+    const message = data?.message || "Request failed.";
     throw new Error(message);
   }
 
@@ -32,18 +59,18 @@ export async function postJson(path, payload) {
 }
 
 export async function putJson(path, payload) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: 'PUT',
+  const response = await fetch(buildUrl(path), {
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message = data?.message || 'Request failed.';
+    const message = data?.message || "Request failed.";
     throw new Error(message);
   }
 
@@ -51,18 +78,18 @@ export async function putJson(path, payload) {
 }
 
 export async function deleteJson(path, payload) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: 'DELETE',
+  const response = await fetch(buildUrl(path), {
+    method: "DELETE",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message = data?.message || 'Request failed.';
+    const message = data?.message || "Request failed.";
     throw new Error(message);
   }
 
