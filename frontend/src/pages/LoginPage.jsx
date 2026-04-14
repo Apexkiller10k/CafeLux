@@ -1,19 +1,20 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { postJson } from '../utils/api';
-import { setCurrentUser } from '../utils/storage';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { postJson } from "../utils/api";
+import { setCurrentUser } from "../utils/storage";
+import backIcon from "../assets/back.png";
 
-const ADMIN_EMAIL = 'admin@xyz.com';
-const ADMIN_PASSWORD = '123456';
+const ADMIN_EMAIL = "admin@xyz.com";
+const ADMIN_PASSWORD = "123456";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageKind, setMessageKind] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageKind, setMessageKind] = useState("");
 
-  const showMessage = (text, kind = '') => {
+  const showMessage = (text, kind = "") => {
     setMessage(text);
     setMessageKind(kind);
   };
@@ -24,35 +25,38 @@ export default function LoginPage() {
     const normalizedEmail = email.trim().toLowerCase();
 
     if (!normalizedEmail || !password) {
-      showMessage('Please enter your email and password.', 'error');
+      showMessage("Please enter your email and password.", "error");
       return;
     }
 
     if (normalizedEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       setCurrentUser({
-        name: 'Admin',
+        name: "Admin",
         email: ADMIN_EMAIL,
-        address: 'Head Office',
-        isAdmin: true
+        address: "Head Office",
+        isAdmin: true,
       });
 
-      showMessage('Admin login successful. Redirecting to dashboard...', 'success');
-      setTimeout(() => navigate('/admin'), 700);
+      showMessage(
+        "Admin login successful. Redirecting to dashboard...",
+        "success",
+      );
+      setTimeout(() => navigate("/admin"), 700);
       return;
     }
 
     try {
-      const data = await postJson('/api/auth/login', {
+      const data = await postJson("/api/auth/login", {
         email: normalizedEmail,
-        password
+        password,
       });
 
       setCurrentUser(data.user);
 
-      showMessage('Welcome back. Redirecting to store...', 'success');
-      setTimeout(() => navigate('/'), 900);
+      showMessage("Welcome back. Redirecting to store...", "success");
+      setTimeout(() => navigate("/"), 900);
     } catch (error) {
-      showMessage(error.message || 'Unable to sign in right now.', 'error');
+      showMessage(error.message || "Unable to sign in right now.", "error");
     }
   };
 
@@ -103,24 +107,28 @@ export default function LoginPage() {
 
         <p
           className={`mt-4 min-h-5 text-sm font-semibold ${
-            messageKind === 'success'
-              ? 'text-emerald-400'
-              : messageKind === 'error'
-                ? 'text-rose-400'
-                : 'text-slate-400'
+            messageKind === "success"
+              ? "text-emerald-400"
+              : messageKind === "error"
+                ? "text-rose-400"
+                : "text-slate-400"
           }`}
         >
           {message}
         </p>
 
         <p className="mt-3 text-sm text-slate-400">
-          New to Cafe?{' '}
+          New to Cafe?{" "}
           <Link to="/signup" className="text-amber-400 hover:underline">
             Create account
           </Link>
         </p>
-        <Link to="/" className="mt-3 inline-block text-sm text-slate-400 hover:underline">
-          ← Back to Store
+        <Link
+          to="/"
+          className="mt-3 inline-flex items-center gap-2 text-sm text-slate-400 hover:underline"
+        >
+          <img src={backIcon} alt="" aria-hidden="true" className="h-4 w-4" />
+          <span>Back to Store</span>
         </Link>
       </section>
     </main>

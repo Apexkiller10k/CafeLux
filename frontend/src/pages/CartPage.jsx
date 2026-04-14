@@ -1,27 +1,28 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   formatPrice,
   getCurrentUser,
   getStoredCart,
-  saveCart
-} from '../utils/storage';
-import { postJson } from '../utils/api';
+  saveCart,
+} from "../utils/storage";
+import { postJson } from "../utils/api";
+import backIcon from "../assets/back.png";
 
 export default function CartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState(getStoredCart());
-  const [checkoutMessage, setCheckoutMessage] = useState('');
+  const [checkoutMessage, setCheckoutMessage] = useState("");
   const [isSuccessMessage, setIsSuccessMessage] = useState(false);
 
   const totalItems = useMemo(
     () => cart.reduce((sum, item) => sum + item.quantity, 0),
-    [cart]
+    [cart],
   );
 
   const subtotal = useMemo(
     () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [cart]
+    [cart],
   );
 
   const updateItemQuantity = (productId, action) => {
@@ -32,15 +33,15 @@ export default function CartPage() {
       return;
     }
 
-    if (action === 'increase') {
+    if (action === "increase") {
       nextCart[itemIndex].quantity += 1;
     }
 
-    if (action === 'decrease') {
+    if (action === "decrease") {
       nextCart[itemIndex].quantity -= 1;
     }
 
-    if (action === 'remove' || nextCart[itemIndex].quantity <= 0) {
+    if (action === "remove" || nextCart[itemIndex].quantity <= 0) {
       nextCart.splice(itemIndex, 1);
     }
 
@@ -51,33 +52,35 @@ export default function CartPage() {
   const clearCart = () => {
     saveCart([]);
     setCart([]);
-    setCheckoutMessage('');
+    setCheckoutMessage("");
     setIsSuccessMessage(false);
   };
 
   const handleCheckout = async () => {
     const currentUser = getCurrentUser();
     if (!currentUser) {
-      setCheckoutMessage('Please log in to proceed to checkout.');
+      setCheckoutMessage("Please log in to proceed to checkout.");
       setIsSuccessMessage(false);
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     if (!totalItems) {
-      setCheckoutMessage('Your cart is empty.');
+      setCheckoutMessage("Your cart is empty.");
       setIsSuccessMessage(false);
       return;
     }
 
     try {
-      const result = await postJson('/api/orders', {
+      const result = await postJson("/api/orders", {
         userEmail: currentUser.email,
-        products: cart
+        products: cart,
       });
 
       if (result.error) {
-        setCheckoutMessage(result.error || 'Checkout failed. Please try again.');
+        setCheckoutMessage(
+          result.error || "Checkout failed. Please try again.",
+        );
         setIsSuccessMessage(false);
         return;
       }
@@ -88,11 +91,11 @@ export default function CartPage() {
       setCheckoutMessage(
         orderNo
           ? `Checkout successful. Your order number is ${orderNo}.`
-          : 'Checkout successful. Your order has been placed.'
+          : "Checkout successful. Your order has been placed.",
       );
       setIsSuccessMessage(true);
     } catch (err) {
-      setCheckoutMessage('Checkout failed. Please try again.');
+      setCheckoutMessage("Checkout failed. Please try again.");
       setIsSuccessMessage(false);
     }
   };
@@ -107,9 +110,10 @@ export default function CartPage() {
           </Link>
           <Link
             to="/"
-            className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
           >
-            ← Continue Shopping
+            <img src={backIcon} alt="" aria-hidden="true" className="h-4 w-4" />
+            <span>Continue Shopping</span>
           </Link>
         </div>
       </header>
@@ -150,11 +154,15 @@ export default function CartPage() {
                     />
                     <div>
                       <h3 className="font-semibold">{item.title}</h3>
-                      <p className="mt-1 text-slate-300">{formatPrice(item.price)}</p>
+                      <p className="mt-1 text-slate-300">
+                        {formatPrice(item.price)}
+                      </p>
                       <div className="mt-2 flex items-center gap-2">
                         <button
                           type="button"
-                          onClick={() => updateItemQuantity(item.id, 'decrease')}
+                          onClick={() =>
+                            updateItemQuantity(item.id, "decrease")
+                          }
                           className="rounded border border-slate-600 px-3 py-1"
                         >
                           −
@@ -162,7 +170,9 @@ export default function CartPage() {
                         <span>{item.quantity}</span>
                         <button
                           type="button"
-                          onClick={() => updateItemQuantity(item.id, 'increase')}
+                          onClick={() =>
+                            updateItemQuantity(item.id, "increase")
+                          }
                           className="rounded border border-slate-600 px-3 py-1"
                         >
                           +
@@ -171,7 +181,7 @@ export default function CartPage() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => updateItemQuantity(item.id, 'remove')}
+                      onClick={() => updateItemQuantity(item.id, "remove")}
                       className="justify-self-start rounded border border-rose-500 px-3 py-1 text-sm text-rose-300 hover:bg-rose-950 sm:self-start"
                     >
                       Remove
@@ -208,7 +218,7 @@ export default function CartPage() {
 
             <p
               className={`mt-3 min-h-5 text-sm font-semibold ${
-                isSuccessMessage ? 'text-emerald-400' : 'text-rose-400'
+                isSuccessMessage ? "text-emerald-400" : "text-rose-400"
               }`}
             >
               {checkoutMessage}

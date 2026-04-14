@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { getJson } from '../utils/api';
-import { formatPrice, getStoredCart, saveCart } from '../utils/storage';
+import { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { getJson } from "../utils/api";
+import { formatPrice, getStoredCart, saveCart } from "../utils/storage";
+import backIcon from "../assets/back.png";
 
 function createStars(rating) {
   const rounded = Math.round(rating);
-  return '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+  return "★".repeat(rounded) + "☆".repeat(5 - rounded);
 }
 
 export default function ProductDetailPage() {
@@ -13,27 +14,27 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     async function loadProduct() {
       try {
         setLoading(true);
-        const data = await getJson('/api/products');
+        const data = await getJson("/api/products");
         const products = Array.isArray(data.products) ? data.products : [];
         const found = products.find((p) => p.id === parseInt(productId));
-        
+
         if (!found) {
-          setError('Product not found.');
+          setError("Product not found.");
           setProduct(null);
         } else {
           setProduct(found);
-          setError('');
+          setError("");
         }
       } catch (err) {
-        setError('Unable to load product.');
+        setError("Unable to load product.");
         setProduct(null);
       } finally {
         setLoading(false);
@@ -59,16 +60,16 @@ export default function ProductDetailPage() {
         title: product.title,
         price: product.price,
         image: product.image,
-        quantity
+        quantity,
       });
     }
 
     saveCart(cart);
     setMessage(`${quantity} × ${product.title} added to cart!`);
     setQuantity(1);
-    
+
     setTimeout(() => {
-      setMessage('');
+      setMessage("");
     }, 3000);
   };
 
@@ -92,15 +93,21 @@ export default function ProductDetailPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
             >
-              ← Back
+              <img
+                src={backIcon}
+                alt=""
+                aria-hidden="true"
+                className="h-4 w-4"
+              />
+              <span>Back</span>
             </button>
           </div>
         </header>
         <main className="mx-auto w-[95%] max-w-[1400px] py-4 sm:py-6">
           <div className="rounded-xl border border-rose-700 bg-rose-950 p-5">
-            <p className="text-rose-300">{error || 'Product not found.'}</p>
+            <p className="text-rose-300">{error || "Product not found."}</p>
             <Link
               to="/"
               className="mt-3 inline-block rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold hover:border-amber-400"
@@ -113,13 +120,14 @@ export default function ProductDetailPage() {
     );
   }
 
-  const categoryLabel = {
-    coffee: 'Coffee',
-    drinks: 'Cold Drinks',
-    sandwiches: 'Sandwiches',
-    pastries: 'Pastries',
-    salads: 'Salads'
-  }[product.category] || product.category;
+  const categoryLabel =
+    {
+      coffee: "Coffee",
+      drinks: "Cold Drinks",
+      sandwiches: "Sandwiches",
+      pastries: "Pastries",
+      salads: "Salads",
+    }[product.category] || product.category;
 
   return (
     <div>
@@ -132,9 +140,10 @@ export default function ProductDetailPage() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
           >
-            ← Back to Store
+            <img src={backIcon} alt="" aria-hidden="true" className="h-4 w-4" />
+            <span>Back to Store</span>
           </button>
         </div>
       </header>
@@ -154,13 +163,17 @@ export default function ProductDetailPage() {
               <p className="text-sm uppercase tracking-wide text-slate-400">
                 {categoryLabel}
               </p>
-              <h1 className="mt-2 text-2xl font-bold sm:text-3xl">{product.title}</h1>
+              <h1 className="mt-2 text-2xl font-bold sm:text-3xl">
+                {product.title}
+              </h1>
 
               <div className="mt-4 flex items-center gap-4">
                 <div className="text-lg font-bold text-amber-400 sm:text-2xl">
                   {createStars(product.rating)}
                 </div>
-                <p className="text-sm text-slate-400 sm:text-base">({product.rating.toFixed(1)} stars)</p>
+                <p className="text-sm text-slate-400 sm:text-base">
+                  ({product.rating.toFixed(1)} stars)
+                </p>
               </div>
 
               <p className="mt-4 text-3xl font-bold text-amber-400 sm:text-4xl">
@@ -179,7 +192,9 @@ export default function ProductDetailPage() {
                   >
                     −
                   </button>
-                  <span className="w-8 text-center font-semibold">{quantity}</span>
+                  <span className="w-8 text-center font-semibold">
+                    {quantity}
+                  </span>
                   <button
                     type="button"
                     onClick={() => setQuantity(quantity + 1)}
@@ -195,7 +210,7 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
                 className="mt-4 w-full rounded-full bg-amber-400 py-3 font-bold text-slate-900 hover:bg-amber-500"
               >
-                Add {quantity > 1 ? `${quantity} ×` : ''} to Cart
+                Add {quantity > 1 ? `${quantity} ×` : ""} to Cart
               </button>
 
               {message && (
@@ -228,15 +243,22 @@ export default function ProductDetailPage() {
         <section className="mt-6 rounded-xl border border-slate-700 bg-slate-900 p-4 sm:p-5">
           <h2 className="text-lg font-bold sm:text-xl">About This Item</h2>
           <p className="mt-3 text-slate-300">
-            This {product.title} is part of the Cafe menu.
-            Prepared fresh with quality ingredients, it is crafted to give you a delicious cafe experience.
-            Whether you want a quick breakfast, lunch, or snack, this item is a customer favorite.
+            This {product.title} is part of the Cafe menu. Prepared fresh with
+            quality ingredients, it is crafted to give you a delicious cafe
+            experience. Whether you want a quick breakfast, lunch, or snack,
+            this item is a customer favorite.
           </p>
           <p className="mt-3 text-slate-300">
-            Category: <span className="font-semibold text-amber-400">{categoryLabel}</span>
+            Category:{" "}
+            <span className="font-semibold text-amber-400">
+              {categoryLabel}
+            </span>
           </p>
           <p className="mt-2 text-slate-300">
-            Rating: <span className="font-semibold text-amber-400">{product.rating.toFixed(1)} / 5.0</span>
+            Rating:{" "}
+            <span className="font-semibold text-amber-400">
+              {product.rating.toFixed(1)} / 5.0
+            </span>
           </p>
         </section>
       </main>

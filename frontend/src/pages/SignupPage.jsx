@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { postJson } from '../utils/api';
-import { setCurrentUser } from '../utils/storage';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { postJson } from "../utils/api";
+import { setCurrentUser } from "../utils/storage";
+import backIcon from "../assets/back.png";
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState({
-    name: '',
-    email: '',
-    password: ''
+    name: "",
+    email: "",
+    password: "",
   });
-  const [message, setMessage] = useState('');
-  const [messageKind, setMessageKind] = useState('');
+  const [message, setMessage] = useState("");
+  const [messageKind, setMessageKind] = useState("");
 
-  const showMessage = (text, kind = '') => {
+  const showMessage = (text, kind = "") => {
     setMessage(text);
     setMessageKind(kind);
   };
@@ -28,47 +29,54 @@ export default function SignupPage() {
     const inputPassword = password;
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail);
     const nextFieldErrors = {
-      name: '',
-      email: '',
-      password: ''
+      name: "",
+      email: "",
+      password: "",
     };
 
     if (!trimmedName) {
-      nextFieldErrors.name = 'Full name is required.';
+      nextFieldErrors.name = "Full name is required.";
     }
 
     if (!normalizedEmail) {
-      nextFieldErrors.email = 'Email is required.';
+      nextFieldErrors.email = "Email is required.";
     } else if (!isValidEmail) {
-      nextFieldErrors.email = 'Please enter a valid email address.';
+      nextFieldErrors.email = "Please enter a valid email address.";
     }
 
     if (!inputPassword) {
-      nextFieldErrors.password = 'Password is required.';
+      nextFieldErrors.password = "Password is required.";
     } else if (inputPassword.length < 6) {
-      nextFieldErrors.password = 'Password must be at least 6 characters.';
+      nextFieldErrors.password = "Password must be at least 6 characters.";
     }
 
     setFieldErrors(nextFieldErrors);
 
-    if (nextFieldErrors.name || nextFieldErrors.email || nextFieldErrors.password) {
-      showMessage('Please fix the highlighted fields.', 'error');
+    if (
+      nextFieldErrors.name ||
+      nextFieldErrors.email ||
+      nextFieldErrors.password
+    ) {
+      showMessage("Please fix the highlighted fields.", "error");
       return;
     }
 
     try {
-      const data = await postJson('/api/auth/signup', {
+      const data = await postJson("/api/auth/signup", {
         name: trimmedName,
         email: normalizedEmail,
-        password: inputPassword
+        password: inputPassword,
       });
 
       setCurrentUser(data.user);
 
-      showMessage('Account created. Redirecting to store...', 'success');
-      setTimeout(() => navigate('/'), 900);
+      showMessage("Account created. Redirecting to store...", "success");
+      setTimeout(() => navigate("/"), 900);
     } catch (error) {
-      showMessage(error.message || 'Unable to create account right now.', 'error');
+      showMessage(
+        error.message || "Unable to create account right now.",
+        "error",
+      );
     }
   };
 
@@ -80,7 +88,9 @@ export default function SignupPage() {
           <span className="text-amber-400">Lux</span>
         </Link>
         <h1 className="mt-4 text-2xl font-bold sm:text-3xl">Create account</h1>
-        <p className="mt-2 text-slate-400">Join Cafe to save favorites and orders</p>
+        <p className="mt-2 text-slate-400">
+          Join Cafe to save favorites and orders
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-5 grid gap-3" noValidate>
           <label htmlFor="signupName" className="text-sm font-semibold">
@@ -93,17 +103,21 @@ export default function SignupPage() {
             onChange={(event) => {
               setName(event.target.value);
               if (message) {
-                setMessage('');
-                setMessageKind('');
+                setMessage("");
+                setMessageKind("");
               }
               if (fieldErrors.name) {
-                setFieldErrors((prev) => ({ ...prev, name: '' }));
+                setFieldErrors((prev) => ({ ...prev, name: "" }));
               }
             }}
             placeholder="Your full name"
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none focus:border-amber-400"
           />
-          {fieldErrors.name && <p className="-mt-2 text-xs font-semibold text-rose-400">{fieldErrors.name}</p>}
+          {fieldErrors.name && (
+            <p className="-mt-2 text-xs font-semibold text-rose-400">
+              {fieldErrors.name}
+            </p>
+          )}
 
           <label htmlFor="signupEmail" className="text-sm font-semibold">
             Email
@@ -115,18 +129,20 @@ export default function SignupPage() {
             onChange={(event) => {
               setEmail(event.target.value);
               if (message) {
-                setMessage('');
-                setMessageKind('');
+                setMessage("");
+                setMessageKind("");
               }
               if (fieldErrors.email) {
-                setFieldErrors((prev) => ({ ...prev, email: '' }));
+                setFieldErrors((prev) => ({ ...prev, email: "" }));
               }
             }}
             placeholder="you@example.com"
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none focus:border-amber-400"
           />
           {fieldErrors.email && (
-            <p className="-mt-2 text-xs font-semibold text-rose-400">{fieldErrors.email}</p>
+            <p className="-mt-2 text-xs font-semibold text-rose-400">
+              {fieldErrors.email}
+            </p>
           )}
 
           <label htmlFor="signupPassword" className="text-sm font-semibold">
@@ -139,11 +155,11 @@ export default function SignupPage() {
             onChange={(event) => {
               setPassword(event.target.value);
               if (message) {
-                setMessage('');
-                setMessageKind('');
+                setMessage("");
+                setMessageKind("");
               }
               if (fieldErrors.password) {
-                setFieldErrors((prev) => ({ ...prev, password: '' }));
+                setFieldErrors((prev) => ({ ...prev, password: "" }));
               }
             }}
             placeholder="At least 6 characters"
@@ -151,7 +167,9 @@ export default function SignupPage() {
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 outline-none focus:border-amber-400"
           />
           {fieldErrors.password && (
-            <p className="-mt-2 text-xs font-semibold text-rose-400">{fieldErrors.password}</p>
+            <p className="-mt-2 text-xs font-semibold text-rose-400">
+              {fieldErrors.password}
+            </p>
           )}
 
           <button
@@ -164,24 +182,28 @@ export default function SignupPage() {
 
         <p
           className={`mt-4 min-h-5 text-sm font-semibold ${
-            messageKind === 'success'
-              ? 'text-emerald-400'
-              : messageKind === 'error'
-                ? 'text-rose-400'
-                : 'text-slate-400'
+            messageKind === "success"
+              ? "text-emerald-400"
+              : messageKind === "error"
+                ? "text-rose-400"
+                : "text-slate-400"
           }`}
         >
           {message}
         </p>
 
         <p className="mt-3 text-sm text-slate-400">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/login" className="text-amber-400 hover:underline">
             Sign in
           </Link>
         </p>
-        <Link to="/" className="mt-3 inline-block text-sm text-slate-400 hover:underline">
-          ← Back to Store
+        <Link
+          to="/"
+          className="mt-3 inline-flex items-center gap-2 text-sm text-slate-400 hover:underline"
+        >
+          <img src={backIcon} alt="" aria-hidden="true" className="h-4 w-4" />
+          <span>Back to Store</span>
         </Link>
       </section>
     </main>

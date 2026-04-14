@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getJson } from "../utils/api";
+import leftArrowIcon from "../assets/left-arrow.png";
+import rightArrowIcon from "../assets/right-arrow.png";
 import {
   formatPrice,
   getCartQuantity,
@@ -366,19 +368,29 @@ export default function StorePage() {
               <button
                 type="button"
                 onClick={handlePrevSlide}
-                className="absolute left-2 top-1/2 z-40 -translate-y-1/2 rounded-full border border-slate-300/70 bg-slate-950/60 px-3 py-2 text-base font-bold text-slate-100 hover:border-amber-400 sm:left-4 sm:px-4 sm:py-3 sm:text-xl"
+                className="absolute left-1 top-1/2 z-40 h-10 w-10 -translate-y-1/2 rounded-full border border-slate-300/70 bg-slate-950/60 p-0 text-base font-bold text-slate-100 hover:border-amber-400 sm:left-3 sm:h-14 sm:w-14 lg:left-4 lg:h-16 lg:w-16"
                 aria-label="Previous popular product"
               >
-                ←
+                <img
+                  src={leftArrowIcon}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-contain"
+                />
               </button>
 
               <button
                 type="button"
                 onClick={handleNextSlide}
-                className="absolute right-2 top-1/2 z-40 -translate-y-1/2 rounded-full border border-slate-300/70 bg-slate-950/60 px-3 py-2 text-base font-bold text-slate-100 hover:border-amber-400 sm:right-4 sm:px-4 sm:py-3 sm:text-xl"
+                className="absolute right-1 top-1/2 z-40 h-10 w-10 -translate-y-1/2 rounded-full border border-slate-300/70 bg-slate-950/60 p-0 text-base font-bold text-slate-100 hover:border-amber-400 sm:right-3 sm:h-14 sm:w-14 lg:right-4 lg:h-16 lg:w-16"
                 aria-label="Next popular product"
               >
-                →
+                <img
+                  src={rightArrowIcon}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-contain"
+                />
               </button>
 
               <div className="absolute bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 sm:bottom-6">

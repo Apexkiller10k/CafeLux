@@ -1,46 +1,47 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { deleteJson, getJson, postJson, putJson } from '../utils/api';
-import { formatPrice, getCurrentUser, setCurrentUser } from '../utils/storage';
+import { useEffect, useMemo, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { deleteJson, getJson, postJson, putJson } from "../utils/api";
+import { formatPrice, getCurrentUser, setCurrentUser } from "../utils/storage";
+import backIcon from "../assets/back.png";
 
-const ADMIN_EMAIL = 'admin@xyz.com';
-const ORDER_STATUSES = ['processing', 'making', 'ready', 'complete'];
+const ADMIN_EMAIL = "admin@xyz.com";
+const ORDER_STATUSES = ["processing", "making", "ready", "complete"];
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
   const currentUser = getCurrentUser();
   const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [products, setProducts] = useState([]);
-  const [productsMessage, setProductsMessage] = useState('');
+  const [productsMessage, setProductsMessage] = useState("");
   const [orders, setOrders] = useState([]);
-  const [ordersMessage, setOrdersMessage] = useState('');
+  const [ordersMessage, setOrdersMessage] = useState("");
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [activeView, setActiveView] = useState('users');
+  const [activeView, setActiveView] = useState("users");
   const [editingProductId, setEditingProductId] = useState(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editCategory, setEditCategory] = useState('');
-  const [editPrice, setEditPrice] = useState('');
-  const [editRating, setEditRating] = useState('');
-  const [editImage, setEditImage] = useState('');
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
-  const [rating, setRating] = useState('');
-  const [image, setImage] = useState('');
+  const [editTitle, setEditTitle] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editRating, setEditRating] = useState("");
+  const [editImage, setEditImage] = useState("");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [rating, setRating] = useState("");
+  const [image, setImage] = useState("");
 
   const isAdmin = currentUser?.isAdmin && currentUser?.email === ADMIN_EMAIL;
 
   useEffect(() => {
     async function loadUsers() {
       try {
-        const data = await postJson('/api/admin/users', {
+        const data = await postJson("/api/admin/users", {
           email: ADMIN_EMAIL,
-          password: '123456'
+          password: "123456",
         });
         setUsers(data.users || []);
       } catch (error) {
-        setMessage(error.message || 'Unable to load admin data.');
+        setMessage(error.message || "Unable to load admin data.");
       }
     }
 
@@ -53,59 +54,58 @@ export default function AdminDashboardPage() {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    navigate('/login');
+    navigate("/login");
   };
 
-
   const handleViewAllProducts = async () => {
-    setProductsMessage('');
+    setProductsMessage("");
 
     try {
-      const data = await getJson('/api/products');
+      const data = await getJson("/api/products");
       setProducts(Array.isArray(data.products) ? data.products : []);
     } catch (error) {
-      setProductsMessage(error.message || 'Unable to load products right now.');
+      setProductsMessage(error.message || "Unable to load products right now.");
     }
   };
 
   const handleViewProductsClick = async () => {
-    setActiveView('products');
+    setActiveView("products");
     await handleViewAllProducts();
   };
 
   const handleViewUsersClick = () => {
-    setActiveView('users');
+    setActiveView("users");
     setShowAddProduct(false);
-    setProductsMessage('');
-    setOrdersMessage('');
+    setProductsMessage("");
+    setOrdersMessage("");
   };
 
   const handleViewOrdersClick = async () => {
-    setActiveView('orders');
+    setActiveView("orders");
     setShowAddProduct(false);
-    setProductsMessage('');
-    setOrdersMessage('');
+    setProductsMessage("");
+    setOrdersMessage("");
 
     try {
-      const data = await postJson('/api/admin/orders', {
+      const data = await postJson("/api/admin/orders", {
         email: ADMIN_EMAIL,
-        password: '123456'
+        password: "123456",
       });
       setOrders(Array.isArray(data.orders) ? data.orders : []);
     } catch (error) {
       setOrders([]);
-      setOrdersMessage(error.message || 'Unable to load orders right now.');
+      setOrdersMessage(error.message || "Unable to load orders right now.");
     }
   };
 
   const handleOrderStatusChange = async (orderId, status) => {
-    setOrdersMessage('');
+    setOrdersMessage("");
 
     try {
       const data = await putJson(`/api/admin/orders/${orderId}/status`, {
         email: ADMIN_EMAIL,
-        password: '123456',
-        status
+        password: "123456",
+        status,
       });
 
       const updatedOrder = data?.order;
@@ -114,42 +114,48 @@ export default function AdminDashboardPage() {
       }
 
       setOrders((prev) =>
-        prev.map((item) => (item._id === updatedOrder._id ? { ...item, status: updatedOrder.status } : item))
+        prev.map((item) =>
+          item._id === updatedOrder._id
+            ? { ...item, status: updatedOrder.status }
+            : item,
+        ),
       );
     } catch (error) {
-      setOrdersMessage(error.message || 'Unable to update order status right now.');
+      setOrdersMessage(
+        error.message || "Unable to update order status right now.",
+      );
     }
   };
 
   const clearProductForm = () => {
-    setTitle('');
-    setCategory('');
-    setPrice('');
-    setRating('');
-    setImage('');
+    setTitle("");
+    setCategory("");
+    setPrice("");
+    setRating("");
+    setImage("");
   };
 
   const handleAddProduct = async (event) => {
     event.preventDefault();
-    setProductsMessage('');
+    setProductsMessage("");
 
     try {
-      await postJson('/api/admin/products', {
+      await postJson("/api/admin/products", {
         email: ADMIN_EMAIL,
-        password: '123456',
+        password: "123456",
         title,
         category,
         price,
         rating,
-        image
+        image,
       });
 
-      setProductsMessage('Product added successfully.');
+      setProductsMessage("Product added successfully.");
       clearProductForm();
       await handleViewAllProducts();
       setShowAddProduct(false);
     } catch (error) {
-      setProductsMessage(error.message || 'Unable to add product right now.');
+      setProductsMessage(error.message || "Unable to add product right now.");
     }
   };
 
@@ -164,57 +170,63 @@ export default function AdminDashboardPage() {
 
   const cancelEditProduct = () => {
     setEditingProductId(null);
-    setEditTitle('');
-    setEditCategory('');
-    setEditPrice('');
-    setEditRating('');
-    setEditImage('');
+    setEditTitle("");
+    setEditCategory("");
+    setEditPrice("");
+    setEditRating("");
+    setEditImage("");
   };
 
   const handleSaveEditedProduct = async (productId) => {
-    setProductsMessage('');
+    setProductsMessage("");
 
     try {
       await putJson(`/api/admin/products/${productId}`, {
         email: ADMIN_EMAIL,
-        password: '123456',
+        password: "123456",
         title: editTitle,
         category: editCategory,
         price: editPrice,
         rating: editRating,
-        image: editImage
+        image: editImage,
       });
 
-      setProductsMessage('Product updated successfully.');
+      setProductsMessage("Product updated successfully.");
       cancelEditProduct();
       await handleViewAllProducts();
     } catch (error) {
-      setProductsMessage(error.message || 'Unable to update product right now.');
+      setProductsMessage(
+        error.message || "Unable to update product right now.",
+      );
     }
   };
 
   const handleDeleteProduct = async (productId) => {
-    const confirmed = window.confirm(`Are you sure you want to delete product #${productId}?`);
+    const confirmed = window.confirm(
+      `Are you sure you want to delete product #${productId}?`,
+    );
     if (!confirmed) {
       return;
     }
 
-    setProductsMessage('');
+    setProductsMessage("");
 
     try {
       await deleteJson(`/api/admin/products/${productId}`, {
         email: ADMIN_EMAIL,
-        password: '123456'
+        password: "123456",
       });
 
       if (editingProductId === productId) {
         cancelEditProduct();
       }
 
-      setProductsMessage('Product deleted successfully.');
+      setProductsMessage("Product deleted successfully.");
       await handleViewAllProducts();
     } catch (error) {
-      setProductsMessage(error.message || 'Unable to delete product right now.');
+      setProductsMessage(
+        error.message || "Unable to delete product right now.",
+      );
     }
   };
 
@@ -233,9 +245,15 @@ export default function AdminDashboardPage() {
           <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
             <Link
               to="/"
-              className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-xs font-semibold hover:border-amber-400 sm:text-sm"
             >
-              ← Back to Store
+              <img
+                src={backIcon}
+                alt=""
+                aria-hidden="true"
+                className="h-4 w-4"
+              />
+              <span>Back to Store</span>
             </Link>
             <button
               type="button"
@@ -251,7 +269,9 @@ export default function AdminDashboardPage() {
       <main className="mx-auto w-[95%] max-w-[1400px] py-4 sm:py-6">
         <section className="rounded-xl border border-slate-700 bg-slate-900 p-4 sm:p-5">
           <h1 className="text-2xl font-bold sm:text-3xl">Admin Dashboard</h1>
-          <p className="mt-2 text-slate-400">Manage Cafe users and monitor account activity.</p>
+          <p className="mt-2 text-slate-400">
+            Manage Cafe users and monitor account activity.
+          </p>
         </section>
 
         <section className="mt-4 grid gap-3 md:grid-cols-2">
@@ -273,9 +293,9 @@ export default function AdminDashboardPage() {
                 type="button"
                 onClick={handleViewUsersClick}
                 className={`rounded-lg px-3 py-2 text-sm font-semibold ${
-                  activeView === 'users'
-                    ? 'bg-amber-400 text-slate-900'
-                    : 'border border-slate-700 hover:border-amber-400'
+                  activeView === "users"
+                    ? "bg-amber-400 text-slate-900"
+                    : "border border-slate-700 hover:border-amber-400"
                 }`}
               >
                 View User
@@ -284,9 +304,9 @@ export default function AdminDashboardPage() {
                 type="button"
                 onClick={handleViewProductsClick}
                 className={`rounded-lg px-3 py-2 text-sm font-semibold ${
-                  activeView === 'products'
-                    ? 'bg-amber-400 text-slate-900'
-                    : 'border border-slate-700 hover:border-amber-400'
+                  activeView === "products"
+                    ? "bg-amber-400 text-slate-900"
+                    : "border border-slate-700 hover:border-amber-400"
                 }`}
               >
                 View Product
@@ -295,9 +315,9 @@ export default function AdminDashboardPage() {
                 type="button"
                 onClick={handleViewOrdersClick}
                 className={`rounded-lg px-3 py-2 text-sm font-semibold ${
-                  activeView === 'orders'
-                    ? 'bg-amber-400 text-slate-900'
-                    : 'border border-slate-700 hover:border-amber-400'
+                  activeView === "orders"
+                    ? "bg-amber-400 text-slate-900"
+                    : "border border-slate-700 hover:border-amber-400"
                 }`}
               >
                 View Orders
@@ -305,11 +325,13 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {activeView === 'users' ? (
+          {activeView === "users" ? (
             <>
               <h3 className="mt-4 text-lg font-bold">User Accounts</h3>
               {message ? (
-                <p className="mt-3 text-sm font-semibold text-rose-400">{message}</p>
+                <p className="mt-3 text-sm font-semibold text-rose-400">
+                  {message}
+                </p>
               ) : users.length ? (
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full text-left text-sm">
@@ -321,7 +343,10 @@ export default function AdminDashboardPage() {
                     </thead>
                     <tbody>
                       {users.map((user) => (
-                        <tr key={user._id || user.email} className="border-b border-slate-800">
+                        <tr
+                          key={user._id || user.email}
+                          className="border-b border-slate-800"
+                        >
                           <td className="px-2 py-2">{user.name}</td>
                           <td className="px-2 py-2">{user.email}</td>
                         </tr>
@@ -330,10 +355,12 @@ export default function AdminDashboardPage() {
                   </table>
                 </div>
               ) : (
-                <p className="mt-3 text-sm text-slate-400">No registered users found.</p>
+                <p className="mt-3 text-sm text-slate-400">
+                  No registered users found.
+                </p>
               )}
             </>
-          ) : activeView === 'products' ? (
+          ) : activeView === "products" ? (
             <>
               <div className="mt-4">
                 <button
@@ -346,7 +373,10 @@ export default function AdminDashboardPage() {
               </div>
 
               {showAddProduct && (
-                <form onSubmit={handleAddProduct} className="mt-4 grid gap-3 md:grid-cols-2">
+                <form
+                  onSubmit={handleAddProduct}
+                  className="mt-4 grid gap-3 md:grid-cols-2"
+                >
                   <input
                     type="text"
                     value={title}
@@ -402,7 +432,9 @@ export default function AdminDashboardPage() {
               )}
 
               {productsMessage && (
-                <p className="mt-3 text-sm font-semibold text-emerald-400">{productsMessage}</p>
+                <p className="mt-3 text-sm font-semibold text-emerald-400">
+                  {productsMessage}
+                </p>
               )}
 
               {!!products.length && (
@@ -420,14 +452,19 @@ export default function AdminDashboardPage() {
                     </thead>
                     <tbody>
                       {products.map((product) => (
-                        <tr key={product.id} className="border-b border-slate-800">
+                        <tr
+                          key={product.id}
+                          className="border-b border-slate-800"
+                        >
                           <td className="px-2 py-2">{product.id}</td>
                           <td className="px-2 py-2">
                             {editingProductId === product.id ? (
                               <input
                                 type="text"
                                 value={editTitle}
-                                onChange={(event) => setEditTitle(event.target.value)}
+                                onChange={(event) =>
+                                  setEditTitle(event.target.value)
+                                }
                                 className="w-full rounded border border-slate-700 bg-slate-950 px-2 py-1 outline-none focus:border-amber-400"
                               />
                             ) : (
@@ -439,7 +476,9 @@ export default function AdminDashboardPage() {
                               <input
                                 type="text"
                                 value={editCategory}
-                                onChange={(event) => setEditCategory(event.target.value)}
+                                onChange={(event) =>
+                                  setEditCategory(event.target.value)
+                                }
                                 className="w-full rounded border border-slate-700 bg-slate-950 px-2 py-1 outline-none focus:border-amber-400"
                               />
                             ) : (
@@ -451,7 +490,9 @@ export default function AdminDashboardPage() {
                               <input
                                 type="number"
                                 value={editPrice}
-                                onChange={(event) => setEditPrice(event.target.value)}
+                                onChange={(event) =>
+                                  setEditPrice(event.target.value)
+                                }
                                 min="0"
                                 step="0.01"
                                 className="w-28 rounded border border-slate-700 bg-slate-950 px-2 py-1 outline-none focus:border-amber-400"
@@ -466,7 +507,9 @@ export default function AdminDashboardPage() {
                                 <input
                                   type="number"
                                   value={editRating}
-                                  onChange={(event) => setEditRating(event.target.value)}
+                                  onChange={(event) =>
+                                    setEditRating(event.target.value)
+                                  }
                                   min="0"
                                   max="5"
                                   step="0.1"
@@ -475,7 +518,9 @@ export default function AdminDashboardPage() {
                                 <input
                                   type="url"
                                   value={editImage}
-                                  onChange={(event) => setEditImage(event.target.value)}
+                                  onChange={(event) =>
+                                    setEditImage(event.target.value)
+                                  }
                                   placeholder="Image URL"
                                   className="w-44 rounded border border-slate-700 bg-slate-950 px-2 py-1 outline-none focus:border-amber-400"
                                 />
@@ -489,7 +534,9 @@ export default function AdminDashboardPage() {
                               <div className="flex gap-2">
                                 <button
                                   type="button"
-                                  onClick={() => handleSaveEditedProduct(product.id)}
+                                  onClick={() =>
+                                    handleSaveEditedProduct(product.id)
+                                  }
                                   className="rounded bg-emerald-500 px-2 py-1 text-xs font-bold text-slate-900"
                                 >
                                   Save
@@ -513,7 +560,9 @@ export default function AdminDashboardPage() {
                                 </button>
                                 <button
                                   type="button"
-                                  onClick={() => handleDeleteProduct(product.id)}
+                                  onClick={() =>
+                                    handleDeleteProduct(product.id)
+                                  }
                                   className="rounded border border-rose-500 px-2 py-1 text-xs font-semibold text-rose-300 hover:bg-rose-950"
                                 >
                                   Delete
@@ -533,9 +582,13 @@ export default function AdminDashboardPage() {
               <h3 className="mt-4 text-lg font-bold">Orders</h3>
 
               {ordersMessage ? (
-                <p className="mt-3 text-sm font-semibold text-rose-400">{ordersMessage}</p>
+                <p className="mt-3 text-sm font-semibold text-rose-400">
+                  {ordersMessage}
+                </p>
               ) : !orders.length ? (
-                <p className="mt-3 text-sm text-slate-400">No orders found yet.</p>
+                <p className="mt-3 text-sm text-slate-400">
+                  No orders found yet.
+                </p>
               ) : (
                 <div className="mt-3 overflow-x-auto">
                   <table className="w-full text-left text-sm">
@@ -551,15 +604,29 @@ export default function AdminDashboardPage() {
                     </thead>
                     <tbody>
                       {orders.map((order) => (
-                        <tr key={order._id} className="border-b border-slate-800">
-                          <td className="px-2 py-2 font-semibold">{order.orderNo || order._id}</td>
+                        <tr
+                          key={order._id}
+                          className="border-b border-slate-800"
+                        >
+                          <td className="px-2 py-2 font-semibold">
+                            {order.orderNo || order._id}
+                          </td>
                           <td className="px-2 py-2">{order.userEmail}</td>
-                          <td className="px-2 py-2">{order.products?.length || 0}</td>
-                          <td className="px-2 py-2">{formatPrice(order.total || 0)}</td>
+                          <td className="px-2 py-2">
+                            {order.products?.length || 0}
+                          </td>
+                          <td className="px-2 py-2">
+                            {formatPrice(order.total || 0)}
+                          </td>
                           <td className="px-2 py-2">
                             <select
                               value={order.status}
-                              onChange={(event) => handleOrderStatusChange(order._id, event.target.value)}
+                              onChange={(event) =>
+                                handleOrderStatusChange(
+                                  order._id,
+                                  event.target.value,
+                                )
+                              }
                               className="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-xs outline-none focus:border-amber-400"
                             >
                               {ORDER_STATUSES.map((status) => (
@@ -570,7 +637,9 @@ export default function AdminDashboardPage() {
                             </select>
                           </td>
                           <td className="px-2 py-2">
-                            {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : '-'}
+                            {order.createdAt
+                              ? new Date(order.createdAt).toLocaleDateString()
+                              : "-"}
                           </td>
                         </tr>
                       ))}
